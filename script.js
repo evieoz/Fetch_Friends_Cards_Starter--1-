@@ -23,7 +23,8 @@ async function loadFriends() {
 
   try {
     const response = await fetch("friends.json");
-
+    
+// A 404 needs response.ok because fetch does not automatically reject HTTP errors.
     if (!response.ok) {
       throw new Error(response.status);
     }
