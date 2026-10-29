@@ -17,36 +17,30 @@ loadButton.addEventListener("click", loadFriends);
 // Checkpoints 2 and 3 replace this whole function.
 // -------------------------------------------------------------
 
+
 function loadFriends() {
   statusMessage.classList.remove("error");
   statusMessage.textContent = "Loading friends...";
 
-  // Step 1: Create the request
-  const xhr = new XMLHttpRequest();
-
-  // Step 2: Open the JSON file
-  xhr.open("GET", "friends.json");
-
-  // Step 3: Handle the response
-  xhr.onload = function () {
-    if (xhr.status === 200) {
-      try {
-        const friends = JSON.parse(xhr.responseText);
-        renderFriends(friends);
-      } catch (error) {
-        showDataError(error);
+  fetch("friends.json")
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error(response.status);
       }
-    } else {
-      showLoadError();
-    }
-  };
-
-  // Step 4: Handle loading errors
-  xhr.onerror = showLoadError;
-
-  // Step 5: Send the request
-  xhr.send();
+      return response.json();
+    })
+    .then(function (friends) {
+      renderFriends(friends);
+    })
+    .catch(function (error) {
+      if (error instanceof SyntaxError) {
+        showDataError(error);
+      } else {
+        showLoadError();
+      }
+    });
 }
+
 
 
 // -------------------------------------------------------------
